@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SANS SENSITIVE // NY</title>
+    
+    <!-- Biblioteca Oficial do Microsoft Entra (MSAL Browser v2) -->
+    <script src="https://msauth.net"></script>
+
+    <style>
+        /* Estilo Editorial Base (Sans Sensitive NY) */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Helvetica Neue', Arial, sans-serif; letter-spacing: 0.08em; }
+        body { background-color: #ffffff; color: #111111; line-height: 1.6; }
+        a { text-decoration: none; color: inherit; }
+        .hidden { display: none !important; }
+
+        /* Barra de Navegação */
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 25px 40px; border-bottom: 1px solid #eeeeee; text-transform: uppercase; font-size: 0.75rem; font-weight: 600; }
+        .logo { font-size: 1.2rem; font-weight: 900; letter-spacing: 0.2em; cursor: pointer; }
+        .nav-links { display: flex; gap: 30px; list-style: none; align-items: center; }
+        .nav-links li { cursor: pointer; transition: opacity 0.2s; }
+        .nav-links li:hover { opacity: 0.6; }
+        .user-badge { background: #111; color: #fff; padding: 4px 8px; font-size: 0.65rem; font-weight: 700; }
+
+        /* Espaço Principal */
+        main { max-width: 1200px; margin: 0 auto; padding: 40px 20px; min-height: 70vh; }
+
+        /* Vitrine de Produtos */
+        .shop-header { text-align: center; margin-bottom: 60px; text-transform: uppercase; }
+        .shop-header h2 { font-size: 2rem; font-weight: 300; margin-bottom: 10px; }
+        .grid-produtos { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px; }
+        .produto-card { cursor: pointer; }
+        .produto-img { width: 100%; height: 380px; background-color: #f7f7f7; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: #999; text-transform: uppercase; transition: filter 0.3s; }
+        .produto-card:hover .produto-img { filter: brightness(0.95); }
+        .produto-info { margin-top: 15px; font-size: 0.85rem; }
+        .produto-nome { text-transform: uppercase; font-weight: 600; }
+        .produto-preco { color: #666; margin-top: 5px; }
+
+        /* Secção de Autenticação */
+        .auth-container { max-width: 400px; margin: 80px auto; padding: 20px; text-align: center; }
+        .auth-container h2 { text-transform: uppercase; font-size: 1.5rem; font-weight: 400; margin-bottom: 20px; }
+        .auth-desc { font-size: 0.8rem; color: #666; margin-bottom: 30px; line-height: 1.5; }
+        
+        /* Botão Oficial da Microsoft (Branding Uniforme) */
+        .btn-microsoft { display: inline-flex; align-items: center; justify-content: center; background-color: #2F2F2F; color: #FFFFFF; font-size: 15px; font-weight: 600; width: 100%; padding: 12px 0; border: none; cursor: pointer; transition: background-color 0.2s; }
+        .btn-microsoft:hover { background-color: #000000; }
+        .btn-microsoft svg { width: 21px; height: 21px; margin-right: 12px; }
+
+        /* Rodapé */
+        footer { margin-top: 100px; padding: 40px 20px; text-align: center; font-size: 0.7rem; color: #999; text-transform: uppercase; border-top: 1px solid #eeeeee; }
+    </style>
+</head>
+<body>
+
+    <!-- Navegação Superior -->
+    <nav>
+        <div class="logo" onclick="irParaLoja()">SANS SENSITIVE // NY</div>
+        <ul class="nav-links">
+            <li onclick="irParaLoja()">Coleção</li>
+            <li id="nav-login-btn" onclick="mostrarLogin()">Entrar</li>
+            <li id="nav-user-status" class="hidden"><span class="user-badge" id="username-display">NY MEMBER</span></li>
+            <li id="nav-logout-btn" class="hidden" onclick="executarLogout()">Sair</li>
+        </ul>
+    </nav>
+
+    <!-- Conteúdo Dinâmico -->
+    <main>
+        <!-- 1. GALERIA DA LOJA -->
+        <div id="section-loja">
+            <div class="shop-header">
+                <h2>New Collection</h2>
+                <p>Edição Urbana Outono/Inverno</p>
+            </div>
+            
+            <div class="grid-produtos">
+                <div class="produto-card">
+                    <div class="produto-img">NOHO TRENCH COAT</div>
+                    <div class="produto-info">
+                        <div class="produto-nome">Casaco Trench NoHo</div>
+                        <div class="produto-preco">cerca de 240 €</div>
+                    </div>
+                </div>
+                <div class="produto-card">
+                    <div class="produto-img">SOHO SLIM TROUSERS</div>
+                    <div class="produto-info">
+                        <div class="produto-nome">Calças Slim SoHo</div>
+                        <div class="produto-preco">cerca de 145 €</div>
+                    </div>
+                </div>
+                <div class="produto-card">
+                    <div class="produto-img">TRIBECA SWEATER</div>
+                    <div class="produto-info">
+                        <div class="produto-nome">Camisola Tribeca</div>
+                        <div class="produto-preco">cerca de 180 €</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. LOGIN MICROSOFT -->
+        <div id="section-auth" class="auth-container hidden">
+            <h2>Identificação</h2>
+            <p class="auth-desc">Aceda à sua área de cliente utilizando as credenciais seguras da sua conta Microsoft.</p>
+            
+            <button class="btn-microsoft" onclick="executarLoginMS()">
+                <svg xmlns="http://w3.org" width="21" height="21" viewBox="0 0 23 23">
+                    <path fill="#f25022" d="M0 0h11v11H0z"/>
+                    <path fill="#7fbb00" d="M12 0h11v11H12z"/>
+                    <path fill="#00a4ef" d="M0 12h11v11H0z"/>
+                    <path fill="#ffb900" d="M12 12h11v11H12z"/>
+                </svg>
+                Sign in with Microsoft
+            </button>
+        </div>
+    </main>
+
+    <footer>
+        &copy; 2026 SANS SENSITIVE NY. Todos os direitos reservados.
+    </footer>
+
+    <!-- Lógica de Controlo e Conectividade -->
+    <script>
+        // --- CONFIGURAÇÃO MICROSOFT ENTRA ID ---
+        const msalConfig = {
+            auth: {
+                clientId: "SUBSTITUA_PELO_SEU_CLIENT_ID_DO_ENTRA", // Cole aqui o Application (client) ID do painel da Microsoft
+                authority: "https://microsoftonline.com",
+                redirectUri: "https://vercel.app",
+                navigateToLoginRequestUrl: false
+            },
+            cache: {
+                cacheLocation: "sessionStorage",
+                storeAuthStateInCookie: false
+            }
+        };
+
+        const msalInstance = new msal.PublicClientApplication(msalConfig);
+        const loginRequest = { scopes: ["user.read"] };
+
+        // Mapeamento do DOM
+        const sectionLoja = document.getElementById('section-loja');
+        const sectionAuth = document.getElementById('section-auth');
+        const navLoginBtn = document.getElementById('nav-login-btn');
+        const navUserStatus = document.getElementById('nav-user-status');
+        const navLogoutBtn = document.getElementById('nav-logout-btn');
+        const usernameDisplay = document.getElementById('username-display');
+
+        // Tratamento do ciclo de vida da autenticação ao carregar a página
+        msalInstance.handleRedirectPromise().then(response => {
+            if (response !== null) {
+                aplicarSessaoAtiva(response.account);
+            } else {
+                const contasAtivas = msalInstance.getAllAccounts();
+                if (contasAtivas.length > 0) {
+                    aplicarSessaoAtiva(contasAtivas[0]);
+                }
+            }
+        }).catch(err => console.error("Erro no redirecionamento do Entra ID:", err));
+
+        // Controladores de Ecrã
+        function mostrarLogin() {
+            sectionLoja.classList.add('hidden');
+            sectionAuth.classList.remove('hidden');
+        }
+
+        function irParaLoja() {
+            sectionAuth.classList.add('hidden');
+            sectionLoja.classList.remove('hidden');
+        }
+
+        // Ações de Autenticação
+        async function executarLoginMS() {
+            try {
+                // Tenta abrir via Pop-up primeiro (experiência de desktop limpa)
+                const loginResponse = await msalInstance.loginPopup(loginRequest);
+                aplicarSessaoAtiva(loginResponse.account);
+            } catch (error) {
+                // Fallback para Redirecionamento total se o pop-up for bloqueado (comum em telemóveis)
+                if (error.errorMessage && error.errorMessage.indexOf("popup_window_error") !== -1) {
+                    msalInstance.loginRedirect(loginRequest);
+                } else {
+                    console.error("Erro na autenticação:", error);
+                }
+            }
+        }
+
+        function aplicarSessaoAtiva(account) {
+            irParaLoja();
+            navLoginBtn.classList.add('hidden');
+            navUserStatus.classList.remove('hidden');
+            navLogoutBtn.classList.remove('hidden');
+            
+            // Trata e exibe o primeiro nome do utilizador vindo da Microsoft
+            const primeiroNome = account.name.split(' ')[0];
+            usernameDisplay.innerText = primeiroNome.toUpperCase();
+        }
+
+        function executarLogout() {
+            const contas Ativas = msalInstance.getAllAccounts();
+            if (contasAtivas.length > 0) {
+                const logoutRequest = { account: contasAtivas[0] };
+                msalInstance.logoutPopup(logoutRequest).then(() => {
+                    window.location.reload();
+                }).catch(() => {
+                    msalInstance.logoutRedirect(logoutRequest);
+                });

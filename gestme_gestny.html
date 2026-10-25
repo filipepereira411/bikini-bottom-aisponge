@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SANS SENSITIVE // NY</title>
-    
-    <!-- Biblioteca Oficial do Microsoft Entra (MSAL Browser v2) -->
-    <script src="https://msauth.net"></script>
 
     <style>
         /* Estilo Editorial Base (Sans Sensitive NY) */
@@ -22,6 +19,7 @@
         .nav-links li { cursor: pointer; transition: opacity 0.2s; }
         .nav-links li:hover { opacity: 0.6; }
         .user-badge { background: #111; color: #fff; padding: 4px 8px; font-size: 0.65rem; font-weight: 700; }
+        .admin-badge { background: #c00; color: #fff; padding: 4px 8px; font-size: 0.65rem; font-weight: 700; margin-left: 5px; }
 
         /* Espaço Principal */
         main { max-width: 1200px; margin: 0 auto; padding: 40px 20px; min-height: 70vh; }
@@ -37,15 +35,29 @@
         .produto-nome { text-transform: uppercase; font-weight: 600; }
         .produto-preco { color: #666; margin-top: 5px; }
 
-        /* Secção de Autenticação */
-        .auth-container { max-width: 400px; margin: 80px auto; padding: 20px; text-align: center; }
+        /* Painel Administrativo */
+        .admin-panel { background: #fafafa; border: 1px dashed #ccc; padding: 30px; margin-top: 40px; }
+        .admin-panel h3 { text-transform: uppercase; margin-bottom: 20px; font-size: 1.2rem; }
+        .admin-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.85rem; }
+        .admin-table th, .admin-table td { text-align: left; padding: 12px; border-bottom: 1px solid #eee; }
+        .admin-table th { text-transform: uppercase; background: #f0f0f0; font-size: 0.75rem; }
+
+        /* Secção de Autenticação Local */
+        .auth-container { max-width: 400px; margin: 60px auto; padding: 30px; text-align: center; border: 1px solid #eee; }
         .auth-container h2 { text-transform: uppercase; font-size: 1.5rem; font-weight: 400; margin-bottom: 20px; }
-        .auth-desc { font-size: 0.8rem; color: #666; margin-bottom: 30px; line-height: 1.5; }
+        .auth-tabs { display: flex; justify-content: center; gap: 20px; margin-bottom: 25px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .auth-tab { font-size: 0.8rem; text-transform: uppercase; cursor: pointer; color: #999; font-weight: 600; }
+        .auth-tab.active { color: #111; border-bottom: 2px solid #111; padding-bottom: 10px; }
         
-        /* Botão Oficial da Microsoft (Branding Uniforme) */
-        .btn-microsoft { display: inline-flex; align-items: center; justify-content: center; background-color: #2F2F2F; color: #FFFFFF; font-size: 15px; font-weight: 600; width: 100%; padding: 12px 0; border: none; cursor: pointer; transition: background-color 0.2s; }
-        .btn-microsoft:hover { background-color: #000000; }
-        .btn-microsoft svg { width: 21px; height: 21px; margin-right: 12px; }
+        .auth-form { display: flex; flex-direction: column; gap: 15px; }
+        .form-group { text-align: left; }
+        .form-group label { display: block; font-size: 0.65rem; text-transform: uppercase; font-weight: 600; margin-bottom: 5px; color: #666; }
+        .form-group input { width: 100%; padding: 12px; border: 1px solid #ccc; font-size: 0.85rem; outline: none; }
+        .form-group input:focus { border-color: #111; }
+        
+        .btn-submit { background-color: #111; color: #fff; border: none; padding: 12px 0; text-transform: uppercase; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: background 0.2s; margin-top: 10px; letter-spacing: 0.1em; }
+        .btn-submit:hover { background-color: #333; }
+        .error-message { color: #c00; font-size: 0.75rem; text-align: left; margin-top: 5px; min-height: 18px; }
 
         /* Rodapé */
         footer { margin-top: 100px; padding: 40px 20px; text-align: center; font-size: 0.7rem; color: #999; text-transform: uppercase; border-top: 1px solid #eeeeee; }
@@ -58,8 +70,11 @@
         <div class="logo" onclick="irParaLoja()">SANS SENSITIVE // NY</div>
         <ul class="nav-links">
             <li onclick="irParaLoja()">Coleção</li>
-            <li id="nav-login-btn" onclick="mostrarLogin()">Entrar</li>
-            <li id="nav-user-status" class="hidden"><span class="user-badge" id="username-display">NY MEMBER</span></li>
+            <li id="nav-login-btn" onclick="mostrarLogin()">Entrar / Registar</li>
+            <li id="nav-user-status" class="hidden">
+                <span class="user-badge" id="username-display">MEMBER</span>
+                <span id="badge-admin-role" class="admin-badge hidden">ADMIN</span>
+            </li>
             <li id="nav-logout-btn" class="hidden" onclick="executarLogout()">Sair</li>
         </ul>
     </nav>
@@ -96,22 +111,68 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Painel Administrativo Secreto (Apenas visível para admin/admin) -->
+            <div id="panel-admin-visual" class="admin-panel hidden">
+                <h3>Consola de Administração Geral</h3>
+                <p>Ligado localmente como utilizador de privilégios elevados.</p>
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Utilizador</th>
+                            <th>E-mail</th>
+                            <th>Nível de Acesso</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-users-list">
+                        <tr>
+                            <td>Administrador do Sistema</td>
+                            <td>admin</td>
+                            <td>Root / Global Admin</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        <!-- 2. LOGIN MICROSOFT -->
+        <!-- 2. PAINEL DE AUTENTICAÇÃO LOCAL -->
         <div id="section-auth" class="auth-container hidden">
-            <h2>Identificação</h2>
-            <p class="auth-desc">Aceda à sua área de cliente utilizando as credenciais seguras da sua conta Microsoft.</p>
-            
-            <button class="btn-microsoft" onclick="executarLoginMS()">
-                <svg xmlns="http://w3.org" width="21" height="21" viewBox="0 0 23 23">
-                    <path fill="#f25022" d="M0 0h11v11H0z"/>
-                    <path fill="#7fbb00" d="M12 0h11v11H12z"/>
-                    <path fill="#00a4ef" d="M0 12h11v11H0z"/>
-                    <path fill="#ffb900" d="M12 12h11v11H12z"/>
-                </svg>
-                Sign in with Microsoft
-            </button>
+            <div class="auth-tabs">
+                <div id="tab-login" class="auth-tab active" onclick="mudarAba('login')">Entrar</div>
+                <div id="tab-registro" class="auth-tab" onclick="mudarAba('registro')">Registar</div>
+            </div>
+
+            <!-- Formulário de Login -->
+            <form id="form-login" class="auth-form" onsubmit="tratarLogin(event)">
+                <div class="form-group">
+                    <label for="login-email">E-mail ou ID Admin</label>
+                    <input type="text" id="login-email" required placeholder="exemplo@email.com ou admin">
+                </div>
+                <div class="form-group">
+                    <label for="login-senha">Palavra-passe</label>
+                    <input type="password" id="login-senha" required placeholder="••••••••">
+                </div>
+                <div id="error-login" class="error-message"></div>
+                <button type="submit" class="btn-submit">Iniciar Sessão</button>
+            </form>
+
+            <!-- Formulário de Registo -->
+            <form id="form-registro" class="auth-form hidden" onsubmit="tratarRegistro(event)">
+                <div class="form-group">
+                    <label for="reg-nome">Nome</label>
+                    <input type="text" id="reg-nome" required placeholder="O seu nome">
+                </div>
+                <div class="form-group">
+                    <label for="reg-email">E-mail</label>
+                    <input type="email" id="reg-email" required placeholder="exemplo@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="reg-senha">Palavra-passe</label>
+                    <input type="password" id="reg-senha" required placeholder="Mínimo 6 caracteres">
+                </div>
+                <div id="error-registro" class="error-message"></div>
+                <button type="submit" class="btn-submit">Criar Conta</button>
+            </form>
         </div>
     </main>
 
@@ -119,89 +180,8 @@
         &copy; 2026 SANS SENSITIVE NY. Todos os direitos reservados.
     </footer>
 
-    <!-- Lógica de Controlo e Conectividade -->
+    <!-- Lógica de Controlo e Armazenamento em localStorage -->
     <script>
-        // --- CONFIGURAÇÃO MICROSOFT ENTRA ID ---
-        const msalConfig = {
-            auth: {
-                clientId: "SUBSTITUA_PELO_SEU_CLIENT_ID_DO_ENTRA", // Cole aqui o Application (client) ID do painel da Microsoft
-                authority: "https://microsoftonline.com",
-                redirectUri: "https://vercel.app",
-                navigateToLoginRequestUrl: false
-            },
-            cache: {
-                cacheLocation: "sessionStorage",
-                storeAuthStateInCookie: false
-            }
-        };
-
-        const msalInstance = new msal.PublicClientApplication(msalConfig);
-        const loginRequest = { scopes: ["user.read"] };
-
         // Mapeamento do DOM
         const sectionLoja = document.getElementById('section-loja');
-        const sectionAuth = document.getElementById('section-auth');
-        const navLoginBtn = document.getElementById('nav-login-btn');
-        const navUserStatus = document.getElementById('nav-user-status');
-        const navLogoutBtn = document.getElementById('nav-logout-btn');
-        const usernameDisplay = document.getElementById('username-display');
-
-        // Tratamento do ciclo de vida da autenticação ao carregar a página
-        msalInstance.handleRedirectPromise().then(response => {
-            if (response !== null) {
-                aplicarSessaoAtiva(response.account);
-            } else {
-                const contasAtivas = msalInstance.getAllAccounts();
-                if (contasAtivas.length > 0) {
-                    aplicarSessaoAtiva(contasAtivas[0]);
-                }
-            }
-        }).catch(err => console.error("Erro no redirecionamento do Entra ID:", err));
-
-        // Controladores de Ecrã
-        function mostrarLogin() {
-            sectionLoja.classList.add('hidden');
-            sectionAuth.classList.remove('hidden');
-        }
-
-        function irParaLoja() {
-            sectionAuth.classList.add('hidden');
-            sectionLoja.classList.remove('hidden');
-        }
-
-        // Ações de Autenticação
-        async function executarLoginMS() {
-            try {
-                // Tenta abrir via Pop-up primeiro (experiência de desktop limpa)
-                const loginResponse = await msalInstance.loginPopup(loginRequest);
-                aplicarSessaoAtiva(loginResponse.account);
-            } catch (error) {
-                // Fallback para Redirecionamento total se o pop-up for bloqueado (comum em telemóveis)
-                if (error.errorMessage && error.errorMessage.indexOf("popup_window_error") !== -1) {
-                    msalInstance.loginRedirect(loginRequest);
-                } else {
-                    console.error("Erro na autenticação:", error);
-                }
-            }
-        }
-
-        function aplicarSessaoAtiva(account) {
-            irParaLoja();
-            navLoginBtn.classList.add('hidden');
-            navUserStatus.classList.remove('hidden');
-            navLogoutBtn.classList.remove('hidden');
-            
-            // Trata e exibe o primeiro nome do utilizador vindo da Microsoft
-            const primeiroNome = account.name.split(' ')[0];
-            usernameDisplay.innerText = primeiroNome.toUpperCase();
-        }
-
-        function executarLogout() {
-            const contas Ativas = msalInstance.getAllAccounts();
-            if (contasAtivas.length > 0) {
-                const logoutRequest = { account: contasAtivas[0] };
-                msalInstance.logoutPopup(logoutRequest).then(() => {
-                    window.location.reload();
-                }).catch(() => {
-                    msalInstance.logoutRedirect(logoutRequest);
-                });
+    

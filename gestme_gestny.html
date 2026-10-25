@@ -3,185 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SANS SENSITIVE // NY</title>
+    <title>Moda Urbana | Loja Online</title>
 
     <style>
-        /* Estilo Editorial Base (Sans Sensitive NY) */
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Helvetica Neue', Arial, sans-serif; letter-spacing: 0.08em; }
-        body { background-color: #ffffff; color: #111111; line-height: 1.6; }
+        /* Estilo Comercial Tradicional (Loja Normal) */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f8f9fa; color: #333333; line-height: 1.5; }
         a { text-decoration: none; color: inherit; }
         .hidden { display: none !important; }
 
-        /* Barra de Navegação */
-        nav { display: flex; justify-content: space-between; align-items: center; padding: 25px 40px; border-bottom: 1px solid #eeeeee; text-transform: uppercase; font-size: 0.75rem; font-weight: 600; }
-        .logo { font-size: 1.2rem; font-weight: 900; letter-spacing: 0.2em; cursor: pointer; }
-        .nav-links { display: flex; gap: 30px; list-style: none; align-items: center; }
-        .nav-links li { cursor: pointer; transition: opacity 0.2s; }
-        .nav-links li:hover { opacity: 0.6; }
-        .user-badge { background: #111; color: #fff; padding: 4px 8px; font-size: 0.65rem; font-weight: 700; }
-        .admin-badge { background: #c00; color: #fff; padding: 4px 8px; font-size: 0.65rem; font-weight: 700; margin-left: 5px; }
+        /* Topo Comercial / Banner de Alerta */
+        .top-promo { background-color: #212529; color: #ffffff; text-align: center; padding: 8px; font-size: 0.85rem; font-weight: 500; }
+
+        /* Barra de Navegação Standard */
+        nav { background-color: #ffffff; display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; border-bottom: 1px solid #e0e0e0; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .logo { font-size: 1.5rem; font-weight: 700; color: #0d6efd; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+        .nav-links { display: flex; gap: 20px; list-style: none; align-items: center; }
+        .nav-links li { cursor: pointer; font-size: 0.95rem; font-weight: 500; transition: color 0.2s; }
+        .nav-links li:hover { color: #0d6efd; }
+        
+        /* Botões de Ação do Menu */
+        .btn-nav-action { background-color: #0d6efd; color: #ffffff; padding: 8px 16px; border-radius: 4px; font-size: 0.9rem; transition: background 0.2s; }
+        .btn-nav-action:hover { background-color: #0b5ed7; }
+        .user-info-group { display: flex; align-items: center; gap: 15px; }
+        .user-name { font-weight: 600; color: #495057; background: #e9ecef; padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; }
+        .admin-tag { background-color: #dc3545; color: #ffffff; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+        .btn-logout { background: none; border: 1px solid #ced4da; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; }
+        .btn-logout:hover { background: #f1f3f5; border-color: #adb5bd; }
 
         /* Espaço Principal */
-        main { max-width: 1200px; margin: 0 auto; padding: 40px 20px; min-height: 70vh; }
+        main { max-width: 1200px; margin: 0 auto; padding: 30px 20px; min-height: 75vh; }
 
-        /* Vitrine de Produtos */
-        .shop-header { text-align: center; margin-bottom: 60px; text-transform: uppercase; }
-        .shop-header h2 { font-size: 2rem; font-weight: 300; margin-bottom: 10px; }
-        .grid-produtos { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px; }
-        .produto-card { cursor: pointer; }
-        .produto-img { width: 100%; height: 380px; background-color: #f7f7f7; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: #999; text-transform: uppercase; transition: filter 0.3s; }
-        .produto-card:hover .produto-img { filter: brightness(0.95); }
-        .produto-info { margin-top: 15px; font-size: 0.85rem; }
-        .produto-nome { text-transform: uppercase; font-weight: 600; }
-        .produto-preco { color: #666; margin-top: 5px; }
+        /* Vitrine de Produtos Convencional */
+        .vitrine-titulo { margin-bottom: 30px; border-bottom: 2px solid #dee2e6; padding-bottom: 10px; }
+        .vitrine-titulo h2 { font-size: 1.75rem; color: #212529; }
+        .grid-produtos { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; }
+        .produto-card { background: #ffffff; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.02); transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; }
+        .produto-card:hover { transform: translateY(-4px); box-shadow: 0 8px 15px rgba(0,0,0,0.06); }
+        .produto-img-container { width: 100%; height: 280px; background-color: #e9ecef; display: flex; align-items: center; justify-content: center; color: #6c757d; font-weight: 600; font-size: 0.9rem; text-align: center; padding: 10px; border-bottom: 1px solid #f1f3f5; }
+        .produto-corpo { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .produto-nome { font-size: 1.05rem; font-weight: 600; color: #212529; margin-bottom: 8px; }
+        .produto-preco { font-size: 1.2rem; font-weight: 700; color: #198754; margin-bottom: 15px; }
+        .btn-comprar { width: 100%; background-color: #212529; color: #ffffff; border: none; padding: 10px; border-radius: 4px; font-weight: 600; cursor: pointer; transition: background 0.2s; text-align: center; }
+        .btn-comprar:hover { background-color: #343a40; }
 
-        /* Painel Administrativo */
-        .admin-panel { background: #fafafa; border: 1px dashed #ccc; padding: 30px; margin-top: 40px; }
-        .admin-panel h3 { text-transform: uppercase; margin-bottom: 20px; font-size: 1.2rem; }
-        .admin-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.85rem; }
-        .admin-table th, .admin-table td { text-align: left; padding: 12px; border-bottom: 1px solid #eee; }
-        .admin-table th { text-transform: uppercase; background: #f0f0f0; font-size: 0.75rem; }
+        /* Área Administrativa */
+        .painel-admin { background-color: #fff; border: 1px solid #b6d4fe; border-radius: 8px; padding: 25px; margin-top: 40px; box-shadow: 0 4px 12px rgba(13, 110, 253, 0.05); }
+        .painel-admin h3 { color: #084298; margin-bottom: 15px; font-size: 1.3rem; display: flex; align-items: center; gap: 10px; }
+        .tabela-admin { width: 100%; border-collapse: collapse; margin-top: 15px; background: #ffffff; }
+        .tabela-admin th, .tabela-admin td { text-align: left; padding: 12px 15px; border-bottom: 1px solid #dee2e6; }
+        .tabela-admin th { background-color: #f8f9fa; color: #495057; font-weight: 600; }
+        .tabela-admin tr:hover { background-color: #f8f9fa; }
 
-        /* Secção de Autenticação Local */
-        .auth-container { max-width: 400px; margin: 60px auto; padding: 30px; text-align: center; border: 1px solid #eee; }
-        .auth-container h2 { text-transform: uppercase; font-size: 1.5rem; font-weight: 400; margin-bottom: 20px; }
-        .auth-tabs { display: flex; justify-content: center; gap: 20px; margin-bottom: 25px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
-        .auth-tab { font-size: 0.8rem; text-transform: uppercase; cursor: pointer; color: #999; font-weight: 600; }
-        .auth-tab.active { color: #111; border-bottom: 2px solid #111; padding-bottom: 10px; }
+        /* Caixa de Autenticação */
+        .caixa-autenticacao { max-width: 420px; background: #ffffff; border: 1px solid #dee2e6; border-radius: 8px; margin: 50px auto; padding: 35px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        .abas-auth { display: flex; margin-bottom: 25px; border-bottom: 1px solid #dee2e6; }
+        .aba-auth { flex: 1; text-align: center; padding: 12px; cursor: pointer; color: #6c757d; font-weight: 600; font-size: 1rem; }
+        .aba-auth.activa { color: #0d6efd; border-bottom: 3px solid #0d6efd; }
         
-        .auth-form { display: flex; flex-direction: column; gap: 15px; }
-        .form-group { text-align: left; }
-        .form-group label { display: block; font-size: 0.65rem; text-transform: uppercase; font-weight: 600; margin-bottom: 5px; color: #666; }
-        .form-group input { width: 100%; padding: 12px; border: 1px solid #ccc; font-size: 0.85rem; outline: none; }
-        .form-group input:focus { border-color: #111; }
+        .formulario-auth { display: flex; flex-direction: column; gap: 18px; }
+        .campo-grupo { display: flex; flex-direction: column; gap: 6px; }
+        .campo-grupo label { font-size: 0.85rem; font-weight: 600; color: #495057; }
+        .campo-grupo input { padding: 10px 14px; border: 1px solid #ced4da; border-radius: 4px; font-size: 0.95rem; outline: none; transition: border-color 0.2s; }
+        .campo-grupo input:focus { border-color: #0d6efd; box-shadow: 0 0 0 3px rgba(13,110,253,0.15); }
         
-        .btn-submit { background-color: #111; color: #fff; border: none; padding: 12px 0; text-transform: uppercase; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: background 0.2s; margin-top: 10px; letter-spacing: 0.1em; }
-        .btn-submit:hover { background-color: #333; }
-        .error-message { color: #c00; font-size: 0.75rem; text-align: left; margin-top: 5px; min-height: 18px; }
+        .btn-entrar-submeter { background-color: #0d6efd; color: #ffffff; border: none; padding: 12px; border-radius: 4px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+        .btn-entrar-submeter:hover { background-color: #0b5ed7; }
+        .msg-erro { color: #dc3545; font-size: 0.8rem; min-height: 18px; font-weight: 500; }
 
-        /* Rodapé */
-        footer { margin-top: 100px; padding: 40px 20px; text-align: center; font-size: 0.7rem; color: #999; text-transform: uppercase; border-top: 1px solid #eeeeee; }
+        /* Rodapé Standard */
+        footer { margin-top: 80px; padding: 30px 20px; text-align: center; font-size: 0.85rem; color: #6c757d; background-color: #ffffff; border-top: 1px solid #e0e0e0; }
     </style>
 </head>
 <body>
 
-    <!-- Navegação Superior -->
+    <!-- Promoções -->
+    <div class="top-promo">🚚 Portes grátis em compras superiores a 50€!</div>
+
+    <!-- Barra de Navegação -->
     <nav>
-        <div class="logo" onclick="irParaLoja()">SANS SENSITIVE // NY</div>
+        <div class="logo" onclick="irParaLoja()">🛍️ ModaUrbana</div>
         <ul class="nav-links">
-            <li onclick="irParaLoja()">Coleção</li>
-            <li id="nav-login-btn" onclick="mostrarLogin()">Entrar / Registar</li>
-            <li id="nav-user-status" class="hidden">
-                <span class="user-badge" id="username-display">MEMBER</span>
-                <span id="badge-admin-role" class="admin-badge hidden">ADMIN</span>
+            <li onclick="irParaLoja()">Início</li>
+            <li onclick="irParaLoja()">Novidades</li>
+            <li id="nav-login-btn" class="btn-nav-action" onclick="mostrarLogin()">Aceder à Minha Conta</li>
+            
+            <!-- Grupo de Estado do Utilizador Autenticado -->
+            <li id="nav-user-status" class="user-info-group hidden">
+                <span class="user-name" id="username-display">Cliente</span>
+                <span id="tag-admin-role" class="admin-tag hidden">Painel Admin Ativo</span>
+                <button class="btn-logout" onclick="executarLogout()">Sair</button>
             </li>
-            <li id="nav-logout-btn" class="hidden" onclick="executarLogout()">Sair</li>
         </ul>
     </nav>
 
-    <!-- Conteúdo Dinâmico -->
+    <!-- Conteúdo Principal -->
     <main>
-        <!-- 1. GALERIA DA LOJA -->
+        <!-- 1. VITRINE DA LOJA -->
         <div id="section-loja">
-            <div class="shop-header">
-                <h2>New Collection</h2>
-                <p>Edição Urbana Outono/Inverno</p>
+            <div class="vitrine-titulo">
+                <h2>Artigos em Destaque</h2>
             </div>
             
             <div class="grid-produtos">
                 <div class="produto-card">
-                    <div class="produto-img">NOHO TRENCH COAT</div>
-                    <div class="produto-info">
-                        <div class="produto-nome">Casaco Trench NoHo</div>
-                        <div class="produto-preco">cerca de 240 €</div>
+                    <div class="produto-img-container">🧥 Casaco Sobretudo NoHo</div>
+                    <div class="produto-corpo">
+                        <div class="produto-nome">Casaco Longo Premium NoHo</div>
+                        <div class="produto-preco">239,99 €</div>
+                        <button class="btn-comprar">Adicionar ao Carrinho</button>
                     </div>
                 </div>
                 <div class="produto-card">
-                    <div class="produto-img">SOHO SLIM TROUSERS</div>
-                    <div class="produto-info">
-                        <div class="produto-nome">Calças Slim SoHo</div>
-                        <div class="produto-preco">cerca de 145 €</div>
+                    <div class="produto-img-container">👖 Calças Slim Fit SoHo</div>
+                    <div class="produto-corpo">
+                        <div class="produto-nome">Calças de Sarja Slim SoHo</div>
+                        <div class="produto-preco">145,00 €</div>
+                        <button class="btn-comprar">Adicionar ao Carrinho</button>
                     </div>
                 </div>
                 <div class="produto-card">
-                    <div class="produto-img">TRIBECA SWEATER</div>
-                    <div class="produto-info">
-                        <div class="produto-nome">Camisola Tribeca</div>
-                        <div class="produto-preco">cerca de 180 €</div>
+                    <div class="produto-img-container">🧶 Camisola de Malha Tribeca</div>
+                    <div class="produto-corpo">
+                        <div class="produto-nome">Camisola de Outono Tribeca</div>
+                        <div class="produto-preco">179,50 €</div>
+                        <button class="btn-comprar">Adicionar ao Carrinho</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Painel Administrativo Secreto (Apenas visível para admin/admin) -->
-            <div id="panel-admin-visual" class="admin-panel hidden">
-                <h3>Consola de Administração Geral</h3>
-                <p>Ligado localmente como utilizador de privilégios elevados.</p>
-                <table class="admin-table">
+            <!-- Painel Administrativo Local (Desbloqueado com admin/admin) -->
+            <div id="panel-admin-visual" class="painel-admin hidden">
+                <h3>⚙️ Consola de Administração da Loja</h3>
+                <p>Lista de utilizadores registados na plataforma local (Simulado):</p>
+                <table class="tabela-admin">
                     <thead>
                         <tr>
-                            <th>Utilizador</th>
-                            <th>E-mail</th>
-                            <th>Nível de Acesso</th>
+                            <th>Nome do Utilizador</th>
+                            <th>E-mail de Registo</th>
+                            <th>Cargo / Nível</th>
                         </tr>
                     </thead>
                     <tbody id="admin-users-list">
                         <tr>
-                            <td>Administrador do Sistema</td>
+                            <td>Administrador Global</td>
                             <td>admin</td>
-                            <td>Root / Global Admin</td>
+                            <td><strong>Administrador do Sistema</strong></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- 2. PAINEL DE AUTENTICAÇÃO LOCAL -->
-        <div id="section-auth" class="auth-container hidden">
-            <div class="auth-tabs">
-                <div id="tab-login" class="auth-tab active" onclick="mudarAba('login')">Entrar</div>
-                <div id="tab-registro" class="auth-tab" onclick="mudarAba('registro')">Registar</div>
-            </div>
-
-            <!-- Formulário de Login -->
-            <form id="form-login" class="auth-form" onsubmit="tratarLogin(event)">
-                <div class="form-group">
-                    <label for="login-email">E-mail ou ID Admin</label>
-                    <input type="text" id="login-email" required placeholder="exemplo@email.com ou admin">
-                </div>
-                <div class="form-group">
-                    <label for="login-senha">Palavra-passe</label>
-                    <input type="password" id="login-senha" required placeholder="••••••••">
-                </div>
-                <div id="error-login" class="error-message"></div>
-                <button type="submit" class="btn-submit">Iniciar Sessão</button>
-            </form>
-
-            <!-- Formulário de Registo -->
-            <form id="form-registro" class="auth-form hidden" onsubmit="tratarRegistro(event)">
-                <div class="form-group">
-                    <label for="reg-nome">Nome</label>
-                    <input type="text" id="reg-nome" required placeholder="O seu nome">
-                </div>
-                <div class="form-group">
-                    <label for="reg-email">E-mail</label>
-                    <input type="email" id="reg-email" required placeholder="exemplo@email.com">
-                </div>
-                <div class="form-group">
-                    <label for="reg-senha">Palavra-passe</label>
-                    <input type="password" id="reg-senha" required placeholder="Mínimo 6 caracteres">
-                </div>
-                <div id="error-registro" class="error-message"></div>
-                <button type="submit" class="btn-submit">Criar Conta</button>
-            </form>
-        </div>
-    </main>
-
-    <footer>
-        &copy; 2026 SANS SENSITIVE NY. Todos os direitos reservados.
-    </footer>
-
-    <!-- Lógica de Controlo e Armazenamento em localStorage -->
-    <script>
-        // Mapeamento do DOM
-        const sectionLoja = document.getElementById('section-loja');
-    
+        <!-- 2. PAINEL DE ENTRADA / REGISTO -->
+        <div id="section-auth" class="caixa-autenticacao hidden">
+                                                                                                           

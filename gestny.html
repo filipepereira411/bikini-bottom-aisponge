@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SANS SENSITIVE // NY</title>
+    
+    <!-- Script Oficial da Microsoft (MSAL Browser v2) -->
+    <script src="https://msauth.net"></script>
+
+    <style>
+        /* Estilo Base (Sans Sensitive NY) */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Helvetica Neue', Arial, sans-serif; letter-spacing: 0.08em; }
+        body { background-color: #ffffff; color: #111111; line-height: 1.6; }
+        a { text-decoration: none; color: inherit; }
+        .hidden { display: none !important; }
+
+        /* Barra de Navegação */
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 25px 40px; border-bottom: 1px solid #eeeeee; text-transform: uppercase; font-size: 0.75rem; font-weight: 600; }
+        .logo { font-size: 1.2rem; font-weight: 900; letter-spacing: 0.2em; }
+        .nav-links { display: flex; gap: 30px; list-style: none; align-items: center; }
+        .nav-links li { cursor: pointer; transition: opacity 0.2s; }
+        .nav-links li:hover { opacity: 0.6; }
+        .user-badge { background: #111; color: #fff; padding: 4px 8px; font-size: 0.65rem; }
+
+        /* Conteúdo Principal */
+        main { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        .shop-header { text-align: center; margin-bottom: 60px; text-transform: uppercase; }
+        .shop-header h2 { font-size: 2rem; font-weight: 300; margin-bottom: 10px; }
+        .grid-produtos { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px; }
+        .produto-card { cursor: pointer; }
+        .produto-img { width: 100%; height: 380px; background-color: #f7f7f7; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: #999; text-transform: uppercase; }
+        .produto-info { margin-top: 15px; font-size: 0.85rem; }
+        .produto-nome { text-transform: uppercase; font-weight: 600; }
+        .produto-preco { color: #666; margin-top: 5px; }
+
+        /* Ecrã de Autenticação */
+        .auth-container { max-width: 400px; margin: 80px auto; padding: 20px; text-align: center; }
+        .auth-container h2 { text-transform: uppercase; font-size: 1.5rem; font-weight: 400; margin-bottom: 30px; }
+        
+        /* Botão Oficial de Login da Microsoft (Branding Guidelines) */
+        .btn-microsoft { display: inline-flex; align-items: center; justify-content: center; background-color: #2F2F2F; color: #FFFFFF; font-size: 15px; font-weight: 600; width: 100%; padding: 12px 0; border: none; cursor: pointer; border-radius: 0px; transition: background-color 0.2s; margin-top: 20px; text-transform: none; letter-spacing: 0; }
+        .btn-microsoft:hover { background-color: #000000; }
+        .btn-microsoft svg { width: 21px; height: 21px; margin-right: 12px; }
+
+        footer { margin-top: 100px; padding: 40px 20px; text-align: center; font-size: 0.7rem; color: #999; text-transform: uppercase; border-top: 1px solid #eeeeee; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">SANS SENSITIVE // NY</div>
+        <ul class="nav-links">
+            <li>Coleção</li>
+            <li>Estúdio</li>
+            <li id="nav-login-btn" onclick="mostrarLogin()">Entrar</li>
+            <li id="nav-user-status" class="hidden"><span class="user-badge" id="username-display">NY MEMBER</span></li>
+            <li id="nav-logout-btn" class="hidden" onclick="executarLogout()">Sair</li>
+        </ul>
+    </nav>
+
+    <main>
+        <!-- VITRINE DE PRODUTOS -->
+        <div id="section-loja">
+            <div class="shop-header">
+                <h2>New Collection</h2>
+                <p>Edição Urbana Outono/Inverno</p>
+            </div>
+            <div class="grid-produtos">
+                <div class="produto-card">
+                    <div class="produto-img">NOHO TRENCH COAT</div>
+                    <div class="produto-info"><div class="produto-nome">Casaco Trench NoHo</div><div class="produto-preco">cerca de 240 €</div></div>
+                </div>
+                <div class="produto-card">
+                    <div class="produto-img">SOHO SLIM TROUSERS</div>
+                    <div class="produto-info"><div class="produto-nome">Calças Slim SoHo</div><div class="produto-preco">cerca de 145 €</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ECRÃ DE LOGIN MICROSOFT -->
+        <div id="section-auth" class="auth-container hidden">
+            <h2>Identificação</h2>
+            <p style="font-size: 0.8rem; color: #666; margin-bottom: 20px;">Inicie sessão com segurança para gerir as suas encomendas.</p>
+            
+            <!-- Botão conforme diretrizes visuais da Microsoft -->
+            <button class="btn-microsoft" onclick="executarLoginMS()">
+                <svg xmlns="http://w3.org" width="21" height="21" viewBox="0 0 23 23">
+                    <path fill="#f25022" d="M0 0h11v11H0z"/>
+                    <path fill="#7fbb00" d="M12 0h11v11H12z"/>
+                    <path fill="#00a4ef" d="M0 12h11v11H0z"/>
+                    <path fill="#ffb900" d="M12 12h11v11H12z"/>
+                </svg>
+                Sign in with Microsoft
+            </button>
+        </div>
+    </main>
+
+    <footer>&copy; 2026 SANS SENSITIVE NY.</footer>
+
+    <script>
+        // --- 1. CONFIGURAÇÃO DO MICROSOFT ENTRA ID / AZURE AD ---
+        // Para colocar em produção, crie uma aplicação no Portal Azure e substitua as chaves abaixo
+        const msalConfig = {
+            auth: {
+                clientId: "COLOQUE-AQUI-O-SEU-CLIENT-ID", // ID da aplicação registada no Azure
+                authority: "https://microsoftonline.com", // Permite contas pessoais e corporativas
+                redirectUri: window.location.origin // Redireciona de volta para a mesma URL
+            },
+            cache: {
+                cacheLocation: "sessionStorage"
+            }
+        };
+
+        // Inicializa a instância oficial do MSAL
+        const msalInstance = new msal.PublicClientApplication(msalConfig);
+
+        // --- 2. GESTÃO DOS ELEMENTOS DOM ---
+        const sectionLoja = document.getElementById('section-loja');
+        const sectionAuth = document.getElementById('section-auth');
+        const navLoginBtn = document.getElementById('nav-login-btn');
+        const navUserStatus = document.getElementById('nav-user-status');
+        const navLogoutBtn = document.getElementById('nav-logout-btn');
+        const usernameDisplay = document.getElementById('username-display');
+
+        function mostrarLogin() {
+            sectionLoja.classList.add('hidden');
+            sectionAuth.classList.remove('hidden');
+        }
+
+        // --- 3. FLUXO REAL DE AUTENTICAÇÃO MICROSOFT ---
+        async function executarLoginMS() {
+            const loginRequest = {
+                scopes: ["user.read"] // Acesso a informações básicas de perfil
+            };
+
+            try {
+                // Abre o popup oficial e seguro da Microsoft
+                const loginResponse = await msalInstance.loginPopup(loginRequest);
+                
+                // Trata a interface após sucesso
+                sectionAuth.classList.add('hidden');
+                sectionLoja.classList.remove('hidden');
+                
+                navLoginBtn.classList.add('hidden');
+                navUserStatus.classList.remove('hidden');
+                navLogoutBtn.classList.remove('hidden');
+                
+                // Define o nome de utilizador vindo da Microsoft
+                usernameDisplay.innerText = loginResponse.account.name.toUpperCase();
+                
+            } catch (error) {
+                console.error("Erro na autenticação:", error);
+                alert("Falha na autenticação da Microsoft. Verifique a consola.");
+            }
+        }
+
+        // Fluxo de Saída da Conta
+        function executarLogout() {
+            msalInstance.logoutPopup().then(() => {
+                navLoginBtn.classList.remove('hidden');
+                navUserStatus.classList.add('hidden');
+                navLogoutBtn.classList.add('hidden');
+                alert('Sessão encerrada.');
+            });
+        }
+    </script>
+</body>
+</html>

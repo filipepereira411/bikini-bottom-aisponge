@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Ficheiros e Câmara | Loja do Filipe</title>
+
+    <style>
+        /* Estilo Unificado - Loja do Filipe e Gestor de Pastas */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f8f9fa; color: #333333; line-height: 1.5; padding: 20px; }
+        
+        .container { max-width: 1100px; margin: 0 auto; background: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid #e0e0e0; }
+        
+        header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #dee2e6; padding-bottom: 15px; }
+        header h1 { color: #20c997; font-size: 1.8rem; }
+        header p { color: #6c757d; font-size: 0.9rem; }
+
+        /* Layout em Duas Colunas */
+        .workspace { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        @media (max-width: 850px) { .workspace { grid-template-columns: 1fr; } }
+
+        /* Secção da Câmara */
+        .camera-section { background: #fff; padding: 15px; border: 1px solid #e0e0e0; border-radius: 6px; }
+        .video-box { position: relative; width: 100%; background: #212529; border-radius: 6px; overflow: hidden; aspect-ratio: 4 / 3; display: flex; align-items: center; justify-content: center; }
+        video { width: 100%; height: 100%; object-fit: cover; }
+        
+        /* Modificadores de Imagem */
+        .mirror { transform: scaleX(-1); }
+        .rotate-90 { transform: rotate(90deg); }
+        .rotate-180 { transform: rotate(180deg); }
+        .rotate-270 { transform: rotate(270deg); }
+
+        /* Secção do Gestor de Pastas Partilhadas */
+        .storage-section { background: #fff; padding: 15px; border: 1px solid #e0e0e0; border-radius: 6px; display: flex; flex-direction: column; }
+        .storage-controls { display: flex; gap: 10px; margin-bottom: 15px; }
+        .storage-controls input { flex: 1; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 4px; }
+        
+        .folder-tree { border: 1px solid #dee2e6; border-radius: 4px; padding: 15px; background: #fafafa; max-height: 350px; overflow-y: auto; flex-grow: 1; }
+        .folder-item { margin-bottom: 10px; }
+        .folder-header { display: flex; align-items: center; justify-content: space-between; background: #e9ecef; padding: 8px 12px; border-radius: 4px; font-weight: 600; font-size: 0.9rem; }
+        .folder-actions { display: flex; gap: 8px; }
+        
+        .file-list { padding-left: 20px; margin-top: 5px; list-style: none; }
+        .file-item { display: flex; align-items: center; justify-content: space-between; padding: 5px 8px; background: #fff; border: 1px solid #eee; margin-top: 3px; border-radius: 3px; font-size: 0.85rem; }
+
+        /* Botões Globais */
+        button { background-color: #212529; color: #ffffff; border: none; padding: 8px 14px; border-radius: 4px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 5px; }
+        button:hover { background-color: #343a40; }
+        button:disabled { background-color: #ced4da; color: #6c757d; cursor: not-allowed; }
+        .btn-sm { padding: 4px 8px; font-size: 0.75rem; }
+        .btn-success { background-color: #20c997; }
+        .btn-success:hover { background-color: #1aa179; }
+        .btn-danger { background-color: #dc3545; }
+        .btn-danger:hover { background-color: #bb2d3b; }
+        .btn-share { background-color: #0d6efd; }
+        .btn-share:hover { background-color: #0b5ed7; }
+
+        .controls-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; justify-content: center; }
+        .status-badge { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.7); color: #fff; padding: 3px 8px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; }
+        
+        /* Modal de Partilha */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+        .modal-content { background: #fff; padding: 25px; border-radius: 6px; max-width: 450px; width: 90%; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .share-link-input { width: 100%; padding: 10px; margin: 15px 0; border: 1px solid #ccc; background: #f1f3f5; font-size: 0.85rem; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Painel de Média e Pastas Partilhadas</h1>
+            <p>Grave conteúdos através da câmara e organize as suas capturas em diretórios locais com hiperligações de partilha instantâneas.</p>
+        </header>
+
+        <div class="workspace">
+            <!-- COLUNA DA CÂMARA -->
+            <div class="camera-section">
+                <div class="video-box">
+                    <span id="camera-status" class="status-badge hidden">GRAVANDO</span>
+                    <video id="webcam" autoplay playsinline></video>
+                    <span id="placeholder-text" style="color: #6c757d; position: absolute;">Câmara Inativa</span>
+                </div>
+                
+                <div class="controls-grid">
+                    <button id="btn-toggle" class="btn-success" onclick="alternarCamara()">Ligar Câmara</button>
+                    <button id="btn-snap" onclick="tirarFoto()" disabled>📸 Foto</button>
+                    <button id="btn-record" class="btn-danger" onclick="alternarGravacao()" disabled>🔴 Gravar</button>
+                    <button id="btn-rotate" onclick="rodarCamara()" disabled>🔄 Rodar</button>
+                </div>
+            </div>
+
+            <!-- COLUNA DO GESTOR DE PASTAS -->
+            <div class="storage-section">
+                <div class="storage-controls">
+                    <input type="text" id="new-folder-name" placeholder="Nome da nova pasta...">
+                    <button class="btn-success" onclick="criarPasta()">📁 Criar Pasta</button>
+                </div>
+
+                <div class="folder-tree" id="folder-container">
+                    <!-- Conteúdo gerado localmente pelo JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Janela Modal para partilha de Links -->
+    <div id="share-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3>🔗 Ligação de Partilha Gerada</h3>
+            <p style="font-size: 0.85rem; color: #6c757d; margin-top: 5px;">Qualquer pessoa com esta hiperligação pode aceder aos ficheiros desta pasta:</p>
+            <input type="text" id="share-link-field" class="share-link-input" readonly>
+            <button class="btn-success" onclick="copiarLinkShare()">Copiar Link</button>
+            <button onclick="fecharModalShare()">Fechar</button>
+        </div>
+    </div>
+
+    <canvas id="canvas-processing" class="hidden" width="640" height="480"></canvas>
+
+    <script>
+        // --- ESTADO GLOBAL (PERSISTIDO EM LOCALSTORAGE) ---
+        let baseDadosPastas = JSON.parse(localStorage.getItem('filipe_pastas')) || {
+            "Imagens Gerais": [],
+            "Vídeos Recentes": []
+        };
+
+        let streamAtivo = null;
+        let mediaRecorder = null;
+        let fragmentosVideo = [];
+        let gravando = false;
+        let orientacoes = ['normal', 'mirror', 'rotate-90', 'rotate-180', 'rotate-270'];
+        let indiceOrientacao = 0;
+        let pastaDestinoAtual = "Imagens Gerais";
+
+        const video = document.getElementById('webcam');
+        const placeholder = document.getElementById('placeholder-text');
+        const statusBadge = document.getElementById('camera-status');
+        const canvas = document.getElementById('canvas-processing');
+
+        // Elementos de controlo de botões
+        const btnToggle = document.getElementById('btn-toggle');
+        const btnSnap = document.getElementById('btn-snap');
+        const btnRecord = document.getElementById('btn-record');
+        const btnRotate = document.getElementById('btn-rotate');
+
+        document.addEventListener("DOMContentLoaded", () => {
+            atualizarVisualizacaoPastas();
+            processarParametrosLink();
+        });
+
+        function guardarDados() {
+            localStorage.setItem('filipe_pastas', JSON.stringify(baseDadosPastas));
+        }
+
+        // --- GESTÃO DE CÂMARA ---
+        async function alternarCamara() {
+            if (streamAtivo) {
+                desligarCamara();
+            } else {
+                try {
+                    streamAtivo = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                    video.srcObject = streamAtivo;
+                    placeholder.classList.add('hidden');
+                    configurarBotoes(true);
+                } catch (err) {
+                    alert("Acesso negado ou câmara não encontrada.");
+                }
+            }
+        }
+
+        function desligarCamara() {
+            if (streamAtivo) {
+                streamAtivo.getTracks().forEach(track => track.stop());
+                streamAtivo = null;
+            }
+            video.srcObject = null;
+            placeholder.classList.remove('hidden');
+            configurarBotoes(false);
+        }
+
+        function configurarBotoes(ativo) {
+            btnToggle.innerText = ativo ? "Desligar Câmara" : "Ligar Câmara";
+            btnToggle.className = ativo ? "btn-danger" : "btn-success";
+            btnSnap.disabled = !ativo;
+            btnRecord.disabled = !ativo;
+            btnRotate.disabled = !ativo;
+        }
+
+        function rodarCamara() {
+            indiceOrientacao = (indiceOrientacao + 1) % orientacoes.length;
+            video.className = orientacoes[indiceOrientacao];
+        }
+
+        function tirarFoto() {
+                    
